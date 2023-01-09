@@ -20,10 +20,25 @@ require('dotenv').config()
 //SET UP STATIC FILE
 app.use(express.static('public'))
 
-app.get('/',  async (req, res) =>{
-    console.log(req.body.text)
+app.get('/vi/:text',  async (req, res) =>{
+    console.log(req.params.text)
     let apiKey = "trnsl.1.1.20230108T150139Z.cec370dd73128496.a231806437d35b08c38b60259242477f6627adbd"
-    let url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=vi&tl=en&dt=t&q=${req.body.text}`
+    let url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=vi&tl=en&dt=t&q=${req.params.text}`
+    await axios.get(url).then((response)=>{
+        const translated = response.data[0][0][0]
+        console.log(response.data[0][0][0])
+        return res.json(translated)
+    })
+    .catch(err => {
+        return res.json("error")
+    })
+    
+})
+
+app.get('/en/:text',  async (req, res) =>{
+    console.log(req.params.text)
+    let apiKey = "trnsl.1.1.20230108T150139Z.cec370dd73128496.a231806437d35b08c38b60259242477f6627adbd"
+    let url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${req.params.text}`
     await axios.get(url).then((response)=>{
         const translated = response.data[0][0][0]
         console.log(response.data[0][0][0])
